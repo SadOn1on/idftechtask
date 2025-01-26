@@ -1,0 +1,19 @@
+{
+  "meta": {
+    "symbol": "USD/EUR",
+    "interval": "1day",
+    "currency_base": "USD",
+    "currency_quote": "EUR",
+    "type": "Physical Currency"
+  },
+  "values": [
+    {
+      "datetime": "2023-01-01",
+      "open": "0.9500",
+      "high": "0.9600",
+      "low": "0.9400",
+      "close": "0.9550"
+    }
+  ],
+  "status": "ok"
+}
