@@ -8,13 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.util.Currency;
+import java.time.*;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -46,7 +41,7 @@ class MapstructMapperTest {
                         "Physical currency"
                 ),
                 List.of(new CurrencyValuesDto(
-                        LocalDate.ofInstant(timestamp, ZoneOffset.UTC),
+                        LocalDateTime.ofInstant(timestamp, ZoneOffset.UTC),
                         BigDecimal.ONE,
                         BigDecimal.TWO,
                         BigDecimal.ZERO,
@@ -73,19 +68,21 @@ class MapstructMapperTest {
                 "USD",
                 BigDecimal.valueOf(12.2),
                 ExpenseCategory.PRODUCT,
-                timestamp.atZone(ZoneOffset.UTC).toLocalDateTime()
-        );
-        Transaction transaction = new Transaction(
+                timestamp.atZone(ZoneOffset.UTC),
                 null,
-                11L,
-                12L,
-                Currency.getInstance("USD"),
-                BigDecimal.valueOf(12.2),
-                ExpenseCategory.PRODUCT,
-                timestamp.atZone(ZoneOffset.UTC).toLocalDateTime(),
-                false
+                null,
+                null
         );
-        assertEquals(transaction, mapper.toTransaction(transactionDto));
+        Transaction mappedTransaction = mapper.toTransaction(transactionDto);
+
+        assertNull(mappedTransaction.getId());
+        assertEquals(11L, mappedTransaction.getAccountFrom());
+        assertEquals(12L, mappedTransaction.getAccountTo());
+        assertEquals("USD", mappedTransaction.getCurrencyShortname());
+        assertEquals(BigDecimal.valueOf(12.2), mappedTransaction.getSum());
+        assertEquals(ExpenseCategory.PRODUCT, mappedTransaction.getExpenseCategory());
+        assertEquals(timestamp.atZone(ZoneOffset.UTC), mappedTransaction.getDatetime());
+        assertFalse(mappedTransaction.getLimitExceeded());
     }
 
     @Test
@@ -96,16 +93,19 @@ class MapstructMapperTest {
                 "USD",
                 BigDecimal.valueOf(12.2),
                 ExpenseCategory.PRODUCT,
-                timestamp.atZone(ZoneOffset.UTC).toLocalDateTime()
+                timestamp.atZone(ZoneOffset.UTC),
+                null,
+                null,
+                null
         );
         Transaction transaction = new Transaction(
                 null,
                 11L,
                 12L,
-                Currency.getInstance("USD"),
+                "USD",
                 BigDecimal.valueOf(12.2),
                 ExpenseCategory.PRODUCT,
-                timestamp.atZone(ZoneOffset.UTC).toLocalDateTime(),
+                timestamp.atZone(ZoneOffset.UTC),
                 false
         );
         assertEquals(transactionDto, mapper.toTransactionDto(transaction));
@@ -131,7 +131,7 @@ class MapstructMapperTest {
         ExpenseLimit expenseLimit = new ExpenseLimit(
                 1L,
                 11L,
-                LocalDateTime.now(),
+                ZonedDateTime.now(),
                 BigDecimal.valueOf(12.1),
                 ExpenseCategory.PRODUCT
         );

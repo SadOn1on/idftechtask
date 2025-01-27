@@ -1,5 +1,8 @@
 package by.zharski.idftechtask.entity;
 
+import lombok.Getter;
+
+@Getter
 public enum ExpenseCategory {
     PRODUCT("product"),
     SERVICE("service");
@@ -8,10 +11,6 @@ public enum ExpenseCategory {
 
     ExpenseCategory(String value) {
         this.value = value;
-    }
-
-    public String getValue() {
-        return value;
     }
 
     public static ExpenseCategory fromValue(String value) {

@@ -8,7 +8,6 @@ import by.zharski.idftechtask.repository.ExchangeRateRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Service
 public class ExchangeRateService {
@@ -28,9 +27,7 @@ public class ExchangeRateService {
     }
 
     public ExchangeRate getExchangeRate(String baseCurrency, String targetCurrency, LocalDate date) {
-        return exchangeRateRepository.findById(
-                    new ExchangeRateKey(baseCurrency, targetCurrency, date)
-                )
+        return exchangeRateRepository.findById(new ExchangeRateKey(baseCurrency, targetCurrency, date))
                 .orElseGet(() -> {
                     ExchangeRate firstExchangeRate = mapper.toExchangeRate(
                             exchangeRateClient.getExchangeRate(baseCurrency, targetCurrency, date).block()

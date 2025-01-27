@@ -1,10 +1,13 @@
 package by.zharski.idftechtask.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public record CurrencyValuesDto(
-        LocalDate datetime,
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+        LocalDateTime datetime,
         BigDecimal open,
         BigDecimal high,
         BigDecimal low,

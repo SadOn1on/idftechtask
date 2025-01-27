@@ -4,8 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.time.Instant;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Entity
 @Data
@@ -23,7 +22,7 @@ public class ExpenseLimit {
     private Long accountId;
 
     @Column(name = "datetime", nullable = false)
-    private LocalDateTime datetime = LocalDateTime.now();
+    private ZonedDateTime datetime = ZonedDateTime.now();
 
     @Column(nullable = false, precision = 18, scale = 2)
     private BigDecimal sum;

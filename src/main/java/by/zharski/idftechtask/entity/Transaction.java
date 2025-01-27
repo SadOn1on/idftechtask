@@ -1,18 +1,15 @@
 package by.zharski.idftechtask.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.util.Currency;
+import java.time.ZonedDateTime;
 
 @Entity
 @Table(name = "transactions")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Transaction {
@@ -28,7 +25,7 @@ public class Transaction {
     private Long accountTo;
 
     @Column(name = "currency_shortname", nullable = false, length = 3)
-    private Currency currencyShortname;
+    private String currencyShortname;
 
     @Column(nullable = false, precision = 18, scale = 2)
     private BigDecimal sum;
@@ -38,7 +35,7 @@ public class Transaction {
     private ExpenseCategory expenseCategory;
 
     @Column(name = "datetime", nullable = false)
-    private LocalDateTime datetime;
+    private ZonedDateTime datetime;
 
     @Column(name = "limit_exceeded", nullable = false)
     private Boolean limitExceeded = false;

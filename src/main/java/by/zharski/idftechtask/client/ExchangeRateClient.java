@@ -1,15 +1,16 @@
 package by.zharski.idftechtask.client;
 
 import by.zharski.idftechtask.dto.ExchangeRateResponseDto;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Service
 @Slf4j
@@ -27,21 +28,21 @@ public class ExchangeRateClient {
     public Mono<ExchangeRateResponseDto> getExchangeRate(
             String baseCurrency,
             String targetCurrency,
-            LocalDate dateTime
+            LocalDate date
     ) throws IllegalArgumentException {
         if (baseCurrency == null || baseCurrency.isEmpty() || targetCurrency == null || targetCurrency.isEmpty()) {
             throw new IllegalArgumentException("Base currency and target currency must not be null or empty");
         }
-        if (dateTime == null) {
+        if (date == null) {
             throw new IllegalArgumentException("Date must not be null");
         }
-        log.info("Call to twelvedata: {}, date: {}", baseCurrency + "/" + targetCurrency, dateTime);
+        log.info("Call to twelvedata: {}, date: {}", baseCurrency + "/" + targetCurrency, date);
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("time_series")
                         .queryParam("symbol", baseCurrency + "/" + targetCurrency)
                         .queryParam("interval", "1day")
-                        .queryParam("date", dateTime)
+                        .queryParam("date", date)
                         .queryParam("apikey", apiKey)
                         .build()
                 )
