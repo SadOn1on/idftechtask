@@ -2,12 +2,13 @@ package by.zharski.idftechtask.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 
 @Entity
-@Data
 @NoArgsConstructor
 @Getter
 @Setter
@@ -28,7 +29,9 @@ public class ExpenseLimit {
     private BigDecimal sum;
 
     @Enumerated(EnumType.STRING)
+    @JdbcType(PostgreSQLEnumJdbcType.class)
     @Column(name = "expense_category", nullable = false)
     private ExpenseCategory expenseCategory;
+
 }
 

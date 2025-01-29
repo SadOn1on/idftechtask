@@ -18,5 +18,4 @@ public interface ExpenseLimitRepository extends JpaRepository<ExpenseLimit, Long
 
     List<ExpenseLimit> findByAccountIdOrderByDatetimeAsc(Long accountId);
 
-
 }

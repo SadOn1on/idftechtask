@@ -42,7 +42,10 @@ public class ExchangeRateClient {
                         .path("time_series")
                         .queryParam("symbol", baseCurrency + "/" + targetCurrency)
                         .queryParam("interval", "1day")
-                        .queryParam("date", date)
+                        // 3-day window to get closing price of previous day in case data is not there for the day
+                        .queryParam("start_date", date.minusDays(3))
+                        // adding one day because end_date is not included in response
+                        .queryParam("end_date", date.plusDays(1))
                         .queryParam("apikey", apiKey)
                         .build()
                 )
@@ -56,6 +59,5 @@ public class ExchangeRateClient {
                 .doOnSuccess(response -> log.info("Call to twelvedata successful: {}", response))
                 .doOnError(error -> log.error("twelvedata api call failed: {}", error.getMessage()))
                 .retry(2);
-
     }
 }

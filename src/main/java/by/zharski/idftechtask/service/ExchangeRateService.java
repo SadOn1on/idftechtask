@@ -5,11 +5,13 @@ import by.zharski.idftechtask.entity.ExchangeRate;
 import by.zharski.idftechtask.entity.ExchangeRateKey;
 import by.zharski.idftechtask.mapper.MapstructMapper;
 import by.zharski.idftechtask.repository.ExchangeRateRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 
 @Service
+@Slf4j
 public class ExchangeRateService {
 
     private final ExchangeRateRepository exchangeRateRepository;
@@ -29,6 +31,8 @@ public class ExchangeRateService {
     public ExchangeRate getExchangeRate(String baseCurrency, String targetCurrency, LocalDate date) {
         return exchangeRateRepository.findById(new ExchangeRateKey(baseCurrency, targetCurrency, date))
                 .orElseGet(() -> {
+                    log.info("Exchange rate for pair {}/{} doesn't exist in db, requesting from TwelveAPI", baseCurrency, targetCurrency);
+
                     ExchangeRate firstExchangeRate = mapper.toExchangeRate(
                             exchangeRateClient.getExchangeRate(baseCurrency, targetCurrency, date).block()
                     );

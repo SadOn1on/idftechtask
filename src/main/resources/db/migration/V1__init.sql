@@ -1,4 +1,4 @@
-CREATE TYPE expense_category_enum AS ENUM ('product', 'service');
+CREATE TYPE expense_category_enum AS ENUM ('PRODUCT', 'SERVICE');
 
 CREATE TABLE transactions (
     id SERIAL PRIMARY KEY,

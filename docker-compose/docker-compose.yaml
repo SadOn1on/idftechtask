@@ -26,7 +26,17 @@ services:
       - "9042:9042"
     volumes:
       - cassandra_data:/var/lib/cassandra
-      - ./:/docker-entrypoint-initdb.d/init.cql
+    networks:
+      - app-network
+
+  cassandra_init:
+    image: cassandra:latest
+    depends_on:
+      - cassandra
+    restart: "no"
+    entrypoint: ["./init.sh"]
+    volumes:
+      - ./init.sh:/init.sh
     networks:
       - app-network
 

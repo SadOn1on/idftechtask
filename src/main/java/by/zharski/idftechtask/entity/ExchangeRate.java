@@ -7,6 +7,7 @@ import org.springframework.data.cassandra.core.mapping.Table;
 import java.math.BigDecimal;
 
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 @Table("exchange_rates")
 public class ExchangeRate {

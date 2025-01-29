@@ -41,7 +41,7 @@ class MapstructMapperTest {
                         "Physical currency"
                 ),
                 List.of(new CurrencyValuesDto(
-                        LocalDateTime.ofInstant(timestamp, ZoneOffset.UTC),
+                        LocalDate.ofInstant(timestamp, ZoneOffset.UTC),
                         BigDecimal.ONE,
                         BigDecimal.TWO,
                         BigDecimal.ZERO,
@@ -86,7 +86,7 @@ class MapstructMapperTest {
     }
 
     @Test
-    void testToTransactionDto() {
+    void testToTransactionDtoFromTransaction() {
         TransactionDto transactionDto = new TransactionDto(
                 11L,
                 12L,
@@ -140,5 +140,37 @@ class MapstructMapperTest {
         assertEquals(11L, expenseLimitDto.accountId());
         assertEquals(BigDecimal.valueOf(12.1), expenseLimit.getSum());
         assertEquals(ExpenseCategory.PRODUCT, expenseLimit.getExpenseCategory());
+    }
+
+    @Test
+    void testToTransactionDtoFromTransactionWithExceededLimit() {
+        ZonedDateTime dateTime = ZonedDateTime.now();
+        TransactionWithExceededLimit transactionWithExceededLimit = new TransactionWithExceededLimit(
+                1L,
+                1L,
+                2L,
+                "USD",
+                BigDecimal.TEN,
+                ExpenseCategory.PRODUCT,
+                dateTime,
+                true,
+                BigDecimal.valueOf(100L),
+                dateTime.withDayOfMonth(1)
+        );
+        TransactionDto expectedTransactionDto = new TransactionDto(
+                1L,
+                2L,
+                "USD",
+                BigDecimal.TEN,
+                ExpenseCategory.PRODUCT,
+                dateTime,
+                BigDecimal.valueOf(100L),
+                dateTime.withDayOfMonth(1),
+                "USD"
+        );
+
+        TransactionDto transactionDto = mapper.toTransactionDto(transactionWithExceededLimit);
+
+        assertEquals(expectedTransactionDto, transactionDto);
     }
 }

@@ -4,8 +4,8 @@ import lombok.Getter;
 
 @Getter
 public enum ExpenseCategory {
-    PRODUCT("product"),
-    SERVICE("service");
+    PRODUCT("PRODUCT"),
+    SERVICE("SERVICE");
 
     private final String value;
 
@@ -21,5 +21,6 @@ public enum ExpenseCategory {
         }
         throw new IllegalArgumentException("Unknown value: " + value);
     }
+
 }
 

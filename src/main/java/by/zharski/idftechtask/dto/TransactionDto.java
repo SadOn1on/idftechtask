@@ -1,9 +1,9 @@
 package by.zharski.idftechtask.dto;
 
 import by.zharski.idftechtask.entity.ExpenseCategory;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
@@ -21,13 +21,14 @@ public record TransactionDto(
         @JsonProperty("expense_category")
         ExpenseCategory expenseCategory,
         @JsonProperty("datetime")
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ssXXX")
         ZonedDateTime datetime,
         @JsonProperty("limit_sum")
         BigDecimal limitSum,
         @JsonProperty("limit_datetime")
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ssXXX")
         ZonedDateTime limitDateTime,
         @JsonProperty("limit_currency_shortname")
-        @DefaultValue("USD")
         String limitCurrencyShortname
 ) {
 }

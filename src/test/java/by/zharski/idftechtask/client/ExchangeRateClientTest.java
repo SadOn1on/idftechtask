@@ -14,7 +14,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -44,7 +43,8 @@ public class ExchangeRateClientTest {
         stubFor(get(urlPathEqualTo("/time_series"))
                 .withQueryParam("symbol", equalTo("USD/EUR"))
                 .withQueryParam("interval", equalTo("1day"))
-                .withQueryParam("date", equalTo("2023-01-01"))
+                .withQueryParam("start_date", equalTo("2022-12-29"))
+                .withQueryParam("end_date", equalTo("2023-01-02"))
                 .withQueryParam("apikey", equalTo("test-api-key"))
                 .willReturn(okJson(responseBody)));
 
@@ -67,7 +67,7 @@ public class ExchangeRateClientTest {
         var values = result.values();
         assertEquals(1, values.size());
         var firstValue = values.getFirst();
-        assertEquals(LocalDateTime.of(2023, 1, 1, 1, 1, 1), firstValue.datetime());
+        assertEquals(LocalDate.of(2023, 1, 1), firstValue.datetime());
         assertEquals(new BigDecimal("0.9500"), firstValue.open());
         assertEquals(new BigDecimal("0.9600"), firstValue.high());
         assertEquals(new BigDecimal("0.9400"), firstValue.low());

@@ -3,6 +3,7 @@ package by.zharski.idftechtask.controller;
 import by.zharski.idftechtask.dto.TransactionDto;
 import by.zharski.idftechtask.service.TransactionService;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,7 +18,7 @@ public class TransactionController {
     }
 
     @PostMapping
-    public TransactionDto createTransaction(TransactionDto transactionDto) {
+    public TransactionDto createTransaction(@RequestBody TransactionDto transactionDto) {
         return transactionService.processTransaction(transactionDto);
     }
 
