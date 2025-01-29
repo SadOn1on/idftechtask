@@ -1,6 +1,7 @@
 version: '3.8'
 
 services:
+
   postgres:
     image: postgres:latest
     container_name: postgres_db
@@ -37,6 +38,27 @@ services:
     entrypoint: ["./init.sh"]
     volumes:
       - ./init.sh:/init.sh
+    networks:
+      - app-network
+
+  client-backend:
+    image: client:0.0.1
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      cassandra_init:
+        condition: service_completed_successfully
+      postgres:
+        condition: service_started
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      DATASOURCE: jdbc:postgresql://postgres:5432/postgres
+      API_KEY: e3a4962c063c4bd186926bb77d8132df
+      CASSANDRA_CONTACT: cassandra
     networks:
       - app-network
 
