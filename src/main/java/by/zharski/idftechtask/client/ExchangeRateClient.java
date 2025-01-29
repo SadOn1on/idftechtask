@@ -12,6 +12,9 @@ import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 
+/**
+ * Service for fetching exchange rate data from the TwelveData API.
+ */
 @Service
 @Slf4j
 public class ExchangeRateClient {
@@ -25,6 +28,15 @@ public class ExchangeRateClient {
         this.webClient = webClient;
     }
 
+    /**
+     * Retrieves the exchange rate between the given base and target currencies for the specified date.
+     *
+     * @param baseCurrency   the base currency code (e.g., "USD")
+     * @param targetCurrency the target currency code (e.g., "EUR")
+     * @param date           the date for which the exchange rate is requested
+     * @return a {@link Mono} containing the exchange rate response DTO
+     * @throws IllegalArgumentException if any parameter is null or empty
+     */
     public Mono<ExchangeRateResponseDto> getExchangeRate(
             String baseCurrency,
             String targetCurrency,

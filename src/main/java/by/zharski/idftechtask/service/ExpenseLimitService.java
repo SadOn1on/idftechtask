@@ -15,6 +15,10 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.List;
 
+/**
+ * Service for managing expense limits.
+ * This service provides functionality to create, retrieve, and list expense limits for user accounts.
+ */
 @Service
 @Slf4j
 public class ExpenseLimitService {
@@ -27,6 +31,13 @@ public class ExpenseLimitService {
         this.mapper = mapper;
     }
 
+    /**
+     * Creates a new expense limit.
+     * The expense limit is assigned the current system time before being saved.
+     *
+     * @param expenseLimitDto the expense limit data transfer object
+     * @return the saved expense limit DTO
+     */
     @Transactional
     public ExpenseLimitDto createExpenseLimit(ExpenseLimitDto expenseLimitDto) {
         ExpenseLimit expenseLimit = mapper.toExpenseLimit(expenseLimitDto);
@@ -35,6 +46,15 @@ public class ExpenseLimitService {
         return mapper.toExpenseLimitDto(expenseLimitRepository.save(expenseLimit));
     }
 
+    /**
+     * Retrieves the most recent expense limit for a given category and account within a specified date range.
+     * If no expense limit is found, a default limit of 1000 is returned.
+     *
+     * @param dateTime the reference date and time
+     * @param expenseCategory the category of the expense
+     * @param accountId the account ID
+     * @return the applicable expense limit
+     */
     public ExpenseLimit getExpenseLimitForDate(ZonedDateTime dateTime, ExpenseCategory expenseCategory, Long accountId) {
         ZonedDateTime beginningOfTheMonth = ZonedDateTime.of(
                 dateTime.getYear(),
@@ -52,6 +72,12 @@ public class ExpenseLimitService {
                 expenseLimitList.getFirst();
     }
 
+    /**
+     * Retrieves all expense limits for a given account, ordered by date in ascending order.
+     *
+     * @param accountId the account ID
+     * @return a list of expense limit DTOs
+     */
     public List<ExpenseLimitDto> getAllExpenseLimits(Long accountId) {
         return expenseLimitRepository.findByAccountIdOrderByDatetimeAsc(accountId).stream()
                 .map(mapper::toExpenseLimitDto)

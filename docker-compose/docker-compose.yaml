@@ -42,7 +42,7 @@ services:
       - app-network
 
   client-backend:
-    image: client:0.0.1
+    image: backend
     build:
       context: ..
       dockerfile: Dockerfile

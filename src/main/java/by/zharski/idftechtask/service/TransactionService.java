@@ -18,6 +18,11 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.List;
 
+/**
+ * Service for handling financial transactions.
+ * This service provides methods for processing transactions, calculating monthly expenses,
+ * and retrieving transactions that exceed set expense limits.
+ */
 @Service
 @Slf4j
 public class TransactionService {
@@ -39,6 +44,16 @@ public class TransactionService {
         this.mapper = mapper;
     }
 
+    /**
+     * Calculates the total sum of transactions for a given expense category within a month,
+     * converting currencies if necessary.
+     *
+     * @param dateTime the reference date and time
+     * @param expenseCategory the category of the expense
+     * @param account the account ID
+     * @param targetCurrency the target currency for conversion
+     * @return the total sum of transactions in the target currency
+     */
     public BigDecimal getTransactionsSumForMonthByExpenseCategory(
             ZonedDateTime dateTime,
             ExpenseCategory expenseCategory,
@@ -78,6 +93,13 @@ public class TransactionService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
+    /**
+     * Processes a transaction by checking if it exceeds the expense limit for the account and category.
+     * If necessary, converts the transaction amount to USD before comparison.
+     *
+     * @param transactionDto the transaction data transfer object
+     * @return the processed transaction DTO
+     */
     @Transactional
     public TransactionDto processTransaction(TransactionDto transactionDto) {
         ExpenseLimit expenseLimit = expenseLimitService.getExpenseLimitForDate(transactionDto.datetime(), transactionDto.expenseCategory(), transactionDto.accountFrom());
@@ -101,6 +123,13 @@ public class TransactionService {
         return mapper.toTransactionDto(transactionRepository.save(transaction));
     }
 
+    /**
+     * Retrieves transactions that have exceeded the expense limit for a given account.
+     * Ensures transaction limit dates and sums are properly initialized.
+     *
+     * @param accountId the account ID
+     * @return a list of transactions that exceeded their limits, mapped to DTOs
+     */
     public List<TransactionDto> getLimitExceedingTransactions(Long accountId) {
         return transactionRepository.findTransactionsExceedingLimit(accountId).stream()
                 .peek(transaction -> {

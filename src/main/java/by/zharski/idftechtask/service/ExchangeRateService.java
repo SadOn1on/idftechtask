@@ -10,6 +10,10 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 
+/**
+ * Service for handling exchange rate retrieval and storage.
+ * This service interacts with a repository and an external exchange rate API to fetch exchange rates.
+ */
 @Service
 @Slf4j
 public class ExchangeRateService {
@@ -28,6 +32,16 @@ public class ExchangeRateService {
         this.mapper = mapper;
     }
 
+    /**
+     * Retrieves the exchange rate for the given currency pair on a specific date.
+     * If the exchange rate is not found in the database, it is fetched from an external API,
+     * stored in the database, and then returned.
+     *
+     * @param baseCurrency the base currency code (e.g., "USD")
+     * @param targetCurrency the target currency code (e.g., "EUR")
+     * @param date the date for which the exchange rate is requested
+     * @return the exchange rate for the given currency pair and date
+     */
     public ExchangeRate getExchangeRate(String baseCurrency, String targetCurrency, LocalDate date) {
         return exchangeRateRepository.findById(new ExchangeRateKey(baseCurrency, targetCurrency, date))
                 .orElseGet(() -> {
