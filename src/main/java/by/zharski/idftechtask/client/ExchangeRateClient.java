@@ -64,7 +64,7 @@ public class ExchangeRateClient {
                 .retrieve()
                 .onStatus(status -> status.is4xxClientError() || status.is5xxServerError(),
                         response -> Mono.error(
-                                new RuntimeException("twelvedata api call failed with status: " + response.statusCode())
+                                new ApiCallException("twelvedata api call failed with status: " + response.statusCode())
                         )
                 )
                 .bodyToMono(ExchangeRateResponseDto.class)
