@@ -32,7 +32,6 @@ public class ExpenseLimitServiceTest {
 
     @Test
     void getExpenseLimitForDate_ExistingLimit_ReturnsFirst() {
-        // Given
         ZonedDateTime dateTime = ZonedDateTime.of(2023, 10, 5, 12, 0, 0, 0, ZoneOffset.UTC);
         ExpenseCategory category = ExpenseCategory.PRODUCT;
         Long accountId = 1L;
@@ -56,7 +55,6 @@ public class ExpenseLimitServiceTest {
 
     @Test
     void getExpenseLimitForDate_NoLimits_ReturnsDefault() {
-        // Given
         ZonedDateTime dateTime = ZonedDateTime.of(2023, 10, 5, 12, 0, 0, 0, ZoneOffset.UTC);
         ExpenseCategory category = ExpenseCategory.SERVICE;
         Long accountId = 2L;
@@ -66,10 +64,8 @@ public class ExpenseLimitServiceTest {
                 expectedStart, dateTime, category, accountId
         )).thenReturn(List.of());
 
-        // When
         ExpenseLimit result = expenseLimitService.getExpenseLimitForDate(dateTime, category, accountId);
 
-        // Then
         assertEquals(BigDecimal.valueOf(1000), result.getSum());
         assertEquals(expectedStart, result.getDatetime());
         assertEquals(accountId, result.getAccountId());

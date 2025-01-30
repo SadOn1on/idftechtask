@@ -1,5 +1,8 @@
 package by.zharski.idftechtask.client;
 
+import by.zharski.idftechtask.dto.CurrencyValuesDto;
+import by.zharski.idftechtask.dto.ExchangeRateMetaDto;
+import by.zharski.idftechtask.dto.ExchangeRateResponseDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -14,6 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.util.List;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -48,7 +52,7 @@ public class ExchangeRateClientTest {
                 .withQueryParam("apikey", equalTo("test-api-key"))
                 .willReturn(okJson(responseBody)));
 
-        var result = exchangeRateClient.getExchangeRate(
+        ExchangeRateResponseDto result = exchangeRateClient.getExchangeRate(
                 "USD",
                 "EUR",
                 LocalDate.of(2023, 1, 1)
@@ -57,16 +61,16 @@ public class ExchangeRateClientTest {
         assertNotNull(result);
         assertEquals("ok", result.status());
 
-        var meta = result.meta();
+        ExchangeRateMetaDto meta = result.meta();
         assertEquals("USD/EUR", meta.symbol());
         assertEquals("1day", meta.interval());
         assertEquals("USD", meta.baseCurrency());
         assertEquals("EUR", meta.targetCurrency());
         assertEquals("Physical Currency", meta.type());
 
-        var values = result.values();
+        List<CurrencyValuesDto> values = result.values();
         assertEquals(1, values.size());
-        var firstValue = values.getFirst();
+        CurrencyValuesDto firstValue = values.getFirst();
         assertEquals(LocalDate.of(2023, 1, 1), firstValue.datetime());
         assertEquals(new BigDecimal("0.9500"), firstValue.open());
         assertEquals(new BigDecimal("0.9600"), firstValue.high());
@@ -79,7 +83,7 @@ public class ExchangeRateClientTest {
         stubFor(get(urlPathEqualTo("/time_series"))
                 .willReturn(badRequest()));
 
-        var exception = assertThrows(RuntimeException.class, () ->
+        Exception exception = assertThrows(RuntimeException.class, () ->
                 exchangeRateClient.getExchangeRate("USD", "EUR", LocalDate.now()).block()
         );
 
@@ -92,7 +96,7 @@ public class ExchangeRateClientTest {
         stubFor(get(urlPathEqualTo("/time_series"))
                 .willReturn(serverError()));
 
-        var exception = assertThrows(RuntimeException.class, () ->
+        Exception exception = assertThrows(RuntimeException.class, () ->
                 exchangeRateClient.getExchangeRate("USD", "EUR", LocalDate.now()).block()
         );
 
